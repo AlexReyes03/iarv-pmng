@@ -10,7 +10,7 @@ pipeline {
             steps {
                 echo 'Deteniendo servicios...'
                 sh '''
-                docker compose   down
+                docker compose -p ${COMPOSE_PROJECT_NAME} -f ${COMPOSE_FILE} --env-file ${ENV_FILE} down
                 '''
             }
         }
@@ -18,19 +18,19 @@ pipeline {
             steps {
                 echo 'Eliminando imagenes anteriores...'
                 sh '''
-                IMAGES = $(docker compose -p ${COMPOSE_PROJECT_NAME} -f ${COMPOSE_FILE} --env-file ${ENV_FILE} config --images | sort -u)
-                for IMAGE in "$IMAGES"; do
+                IMAGES=$(docker compose -p ${COMPOSE_PROJECT_NAME} -f ${COMPOSE_FILE} --env-file ${ENV_FILE} config --images | sort -u)
+                for IMAGE in $IMAGES; do
                     echo "Eliminando imagen: $IMAGE"
-                    docker rmi "$IMAGE" || true;
+                    docker rmi "$IMAGE" || true
                 done
                 '''
             }
         }
         stage('Construir proyecto') {
             steps {
-                echo 'Construyendo nuevas imágenes...'
+                echo 'Construyendo nuevas imagenes...'
                 sh '''
-                    docker compose -p ${COMPOSE_PROJECT_NAME} -f ${COMPOSE_FILE} --env-file ${ENV_FILE} build --no-cache
+                docker compose -p ${COMPOSE_PROJECT_NAME} -f ${COMPOSE_FILE} --env-file ${ENV_FILE} build --no-cache
                 '''
             }
         }
