@@ -4,10 +4,10 @@ services:
     build:
       context: ./service
     container_name: pmng-servicios
-    enviroment:
+    environment:
       - DC_SERVER_PORT=${ENV_SERVER_PORT}
       - DC_DB_NAME=${ENV_DB_NAME}
-      - DC_DB_HOST=pmng-${ENV_DB_HOST}
+      - DC_DB_HOST=${ENV_DB_HOST}
       - DC_DB_PORT=${ENV_DB_PORT}
       - DC_DB_USERNAME=${ENV_DB_USERNAME}
       - DC_DB_PASSWORD=${ENV_DB_PASSWORD}
