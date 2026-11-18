@@ -1,4 +1,18 @@
+# Etapa 1: Build de Vite
+FROM node:22-alpine AS build
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY . .
+RUN npm run build
+
+# Etapa 2: Runtime con nginx
 FROM nginx:alpine
+
 RUN rm -rf /usr/share/nginx/html/*
-COPY dist/ /usr/share/nginx/html/
+COPY --from=build /app/dist/ /usr/share/nginx/html/
+
 EXPOSE 80
